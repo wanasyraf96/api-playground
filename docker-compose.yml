@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  reactjs:
+    container_name: react
+    build: .
+    ports:
+      - 3001:3000
+    volumes:
+      - web_data:/app
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:6.0.3
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb:/var/lib/mongodb
+    ports:
+      - 27017:27017
+  
+  mongo_express:
+    container_name: mongo_express
+    image: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongodb:27017/
+    ports:
+      - 8081:8081
+
+volumes:
+  web_data:
+  mongodb:
